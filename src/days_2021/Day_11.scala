@@ -1,9 +1,11 @@
 package days_2021
 
 import scala.annotation.tailrec
+import scala.util.control.Breaks._
 
 object Day_11 {
   var flashes = 0
+  var step = 0
   val lines: Array[String] = Array(
     "8258741254",
     "3335286211",
@@ -15,6 +17,17 @@ object Day_11 {
     "3586862837",
     "7568272878",
     "6833643144")
+  val linesTest: Array[String] = Array(
+    "5483143223",
+    "2745854711",
+    "5264556173",
+    "6141336146",
+    "6357385478",
+    "4167524645",
+    "2176841721",
+    "6882881134",
+    "4846848554",
+    "5283751526")
 
   def hasFlash(field: Array[String]): Boolean = {
     field.map(x => x.contains('+')).reduce((a, b) => a || b)
@@ -32,10 +45,15 @@ object Day_11 {
 
   def updateRound(array: Array[String], rounds: Int): Array[String] = {
     var round = array
-    0 until rounds foreach(_ => {
+    0 until rounds foreach (_ => {
       round = round.map(line => line.map(octopus => increaseOctopus(octopus)))
       round = update(round).map(line => line.map(chr => if chr == '-' then '0' else chr))
       println(round.mkString("Array(", ", ", ")"))
+      step = step + 1
+      if round.map(line => line.map(chr => chr == '0').reduce((a, b) => a && b))
+        .reduce((a, b) => a && b) then
+        println("ALL FLASHES at " + step.toString)
+        break()
     })
     round
   }
@@ -44,8 +62,8 @@ object Day_11 {
   def update(array: Array[String]): Array[String] = {
     if !hasFlash(array) then return array
     var result = array
-    result.indices foreach(indexY =>
-      result(indexY).indices foreach(indexX =>
+    result.indices foreach (indexY =>
+      result(indexY).indices foreach (indexX =>
         if result(indexY)(indexX) == '+' then {
           result = increaseAdjacent(result, indexX, indexY)
           result = result.updated(indexY, result(indexY).updated(indexX, '-'))
@@ -81,7 +99,7 @@ object Day_11 {
   }
 
   def run(): Unit = {
-    updateRound(lines, 100)
+    updateRound(lines, 2000)
     println(flashes)
   }
 }
