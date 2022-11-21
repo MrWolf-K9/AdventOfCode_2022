@@ -1,9 +1,10 @@
 package days_2021
 
 import scala.annotation.tailrec
+import scala.io.BufferedSource
 
 object Day_10 {
-  val lines: Array[String] = Array(
+  /*val lines: Array[String] = Array(
     "[({(<(())[]>[[{[]{<()<>>",
     "[(()[<>])]({[<{<<[]>>(",
     "{([(<{}[<>[]}>{[]{[(<()>",
@@ -14,6 +15,10 @@ object Day_10 {
     "[<(<(<(<{}))><([]([]()",
     "<{([([[(<>()){}]>(<<{{",
     "<{([{{}}[<[[[<>{}]]]>[]]")
+  */
+
+  val source: BufferedSource = scala.io.Source.fromFile("day10_input1.txt")
+  val lines: Array[String] = try source.mkString.split("\n") finally source.close()
 
   def handleChar(stack: Array[Char], chr: Char): Either[Array[Char], Int] = {
     var stackCopy = stack
