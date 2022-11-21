@@ -7,6 +7,6 @@ object Main {
 
 
   def main(args: Array[String]): Unit = {
-    Day_10.run()
+    Day_11.run()
   }
 }
