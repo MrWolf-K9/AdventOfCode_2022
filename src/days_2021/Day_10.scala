@@ -4,7 +4,7 @@ import scala.annotation.tailrec
 import scala.io.BufferedSource
 
 object Day_10 {
-  val lines: Array[String] = Array(
+  /*val lines: Array[String] = Array(
     "[({(<(())[]>[[{[]{<()<>>",
     "[(()[<>])]({[<{<<[]>>(",
     "{([(<{}[<>[]}>{[]{[(<()>",
@@ -15,10 +15,10 @@ object Day_10 {
     "[<(<(<(<{}))><([]([]()",
     "<{([([[(<>()){}]>(<<{{",
     "<{([{{}}[<[[[<>{}]]]>[]]")
+*/
 
-
-  //val source: BufferedSource = scala.io.Source.fromFile("day10_input1.txt")
-  //val lines: Array[String] = try source.mkString.split("\n") finally source.close()
+  val source: BufferedSource = scala.io.Source.fromFile("day10_input1.txt")
+  val lines: Array[String] = try source.mkString.split("\n") finally source.close()
 
   def handleChar(stack: Array[Char], chr: Char): Either[Array[Char], Int] = {
     var stackCopy = stack
@@ -46,14 +46,14 @@ object Day_10 {
   }
 
 
-  def solveStack(stack: Array[Char]): Int = {
+  def solveStack(stack: Array[Char]): BigInt = {
     val gradedStack = stack.reverse.map(chr => chr match
-      case '(' => 1
-      case '[' => 2
-      case '{' => 3
-      case '<' => 4
+      case '(' => BigInt(1)
+      case '[' => BigInt(2)
+      case '{' => BigInt(3)
+      case '<' => BigInt(4)
     )
-    gradedStack.fold(0)((a, b) => a * 5 + b)
+    gradedStack.fold(BigInt(0))((a: BigInt, b: BigInt) => a * BigInt(5) + b)
   }
 
   @tailrec
@@ -66,7 +66,7 @@ object Day_10 {
   }
 
   @tailrec
-  def handleLineFinish(array: Array[Char], stack: Array[Char], index: Int): Int = {
+  def handleLineFinish(array: Array[Char], stack: Array[Char], index: Int): BigInt = {
     if index >= array.length then
       if !stack.isEmpty then return solveStack(stack) else return 0
     val result = handleChar(stack, array(index))
@@ -76,8 +76,8 @@ object Day_10 {
   }
 
   def run(): Unit = {
-    val res = lines.map(line => handleLineFinish(line.toCharArray, Array(), 0)).filter(x => x != 0)
-    println(res.sorted(Ordering.Int)(res.length / 2))
+    val res = lines.map(line => handleLineFinish(line.toCharArray, Array(), 0)).filter(x => x != 0).sorted
+    println(res(res.length / 2))
   }
 
 }
