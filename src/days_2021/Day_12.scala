@@ -46,6 +46,7 @@ object Day_12 {
     numberOfPaths
   }
 
+  // better solution is with Set
   def parseLine(caves: Seq[Cave], line: String): Seq[Cave] = {
     var cavesCopy = caves
     val caveStrings = line.split('-')
