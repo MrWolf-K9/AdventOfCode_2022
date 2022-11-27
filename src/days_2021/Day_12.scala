@@ -6,7 +6,6 @@ import scala.io.BufferedSource
 
 class Cave(var name: String, var caveType: CaveTypes) {
   var nextCaves: Seq[Cave] = Seq()
-  var visited: Boolean = false
 
   def isBig: Boolean = {
     name.toUpperCase() == name
@@ -19,10 +18,6 @@ class Cave(var name: String, var caveType: CaveTypes) {
   def addNextCaves(cave: Cave): Unit = {
     nextCaves = nextCaves.appended(cave)
   }
-
-  def setVisited(value: Boolean): Unit = {
-    visited = value
-  }
 }
 
 class ResultPaths(result: Seq[String]) {
@@ -30,19 +25,29 @@ class ResultPaths(result: Seq[String]) {
 
 object Day_12 {
 
-  def solveCaves(caves: Seq[Cave], cave: Cave, path: String): Long = {
-    if cave.caveType == CaveTypes.End then {
-      println(path + cave.name + " ---- FINISHED")
-      return 1L
+  def solveCaves(caves: Seq[Cave], cave: Cave, path: String, visitedSmall: Boolean): Long = {
+    var visitedSmallNext = visitedSmall
+    val containsCave = path.contains(cave.name)
+    if cave.caveType == CaveTypes.End || (containsCave && cave.caveType == CaveTypes.Start) then {
+      if cave.caveType == CaveTypes.End then {
+        println(path + cave.name +
+          " ---- FINISHED")
+        return 1L
+
+      }
+      else {
+        return 0L
+      }
     }
-    if !cave.isBig && cave.visited then {
-      println(path + cave.name)
-      return 0L
+    if !cave.isBig && containsCave then {
+      if visitedSmall then {
+        println(path + cave.name + " twice")
+        return 0L
+      }
+      visitedSmallNext = true
     }
-    cave.setVisited(true)
     var numberOfPaths = 0L
-    cave.getNextCaves.foreach(nextCave => numberOfPaths = numberOfPaths + solveCaves(caves, nextCave, path + cave.name + ","))
-    cave.setVisited(false)
+    cave.getNextCaves.foreach(nextCave => numberOfPaths = numberOfPaths + solveCaves(caves, nextCave, path + cave.name + ",", visitedSmallNext))
     numberOfPaths
   }
 
@@ -113,7 +118,7 @@ object Day_12 {
     linesFinal.foreach(line => caves = parseLine(caves, line))
     var resultPaths = ResultPaths(Seq())
     val startingCave = caves.find(cave => cave.caveType == CaveTypes.Start).get
-    println(solveCaves(caves, startingCave, ""))
+    println(solveCaves(caves, startingCave, "", false))
   }
 
 }
